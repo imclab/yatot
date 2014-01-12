@@ -52,7 +52,7 @@ Celles-ci devraient être corrigées sous peu.
 Tout devrait être correctement chargé maintenant.
 Pour vérifier :
 
-`$ src/yatot/ data/<bdd.sqlite3>`
+`$ src/yatot/main.py data/<bdd.sqlite3>`
 
 ## Documentation
 
