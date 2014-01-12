@@ -323,23 +323,30 @@ class ACLI:
                 texts[col] = texts[col].ljust(colwidths[col])
             self.stdout.write("%s\n"%str("  ".join(texts)))
 
+
 banner = """
-          _______ _________ _______ _________
-|\     /|(  ___  )\__   __/(  ___  )\__   __/
-( \   / )| (   ) |   ) (   | (   ) |   ) (   
- \ (_) / | (___) |   | |   | |   | |   | |   
-  \   /  |  ___  |   | |   | |   | |   | |   
-   ) (   | (   ) |   | |   | |   | |   | |   
-   | |   | )   ( |   | |   | (___) |   | |   
-   \_/   |/     \|   )_(   (_______)   )_(   
+                       _______ _________ _______ _________
+             |\     /|(  ___  )\__   __/(  ___  )\__   __/
+             ( \   / )| (   ) |   ) (   | (   ) |   ) (
+              \ (_) / | (___) |   | |   | |   | |   | |
+               \   /  |  ___  |   | |   | |   | |   | |
+                ) (   | (   ) |   | |   | |   | |   | |
+                | |   | )   ( |   | |   | (___) |   | |
+                \_/   |/     \|   )_(   (_______)   )_(
                                              
 """
+
 
 welcomeMsg = """
 Welcome to YATOT.
 
-<description>
-<instruction>
+YATOT is a Tip Of the Tongue game.
+
+Choose a word, and try to make me guess it, one hint at a time.
+If I find it, please tell me so by typing /gg. At some point, I might
+give up and ask you this answer.
+
+Type /help to get the list of command, /exit to quit.
 
 Good Luck & Have Fun !
 
@@ -350,7 +357,6 @@ class CLI(ACLI):
 
     def __init__(self, yatot):
         ACLI.__init__(self)
-        self._hintno = 0
         self._yatot = yatot
         self.intro = banner +  welcomeMsg
 
@@ -388,5 +394,13 @@ class CLI(ACLI):
 
     
     def default(self, hint):
-        self._hintno = self._hintno + 1
-        print "hint #{0}: {1}".format(self._hintno, hint)
+        self._yatot._hintGiven(hint)
+
+
+    def printMsg(self, msg):
+        print msg
+
+    
+    def printRow(self, row):
+        for key in row.keys():
+            print "{0} : {1}".format(key, row[key])
