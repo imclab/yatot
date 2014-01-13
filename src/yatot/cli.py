@@ -344,7 +344,7 @@ YATOT is a Tip Of the Tongue game.
 
 Choose a word, and try to make me guess it, one hint at a time.
 If I find it, please tell me so by typing /gg. At some point, I might
-give up and ask you this answer.
+give up and ask you the answer.
 
 Type /help to get the list of command, /exit to quit.
 
@@ -364,24 +364,10 @@ class CLI(ACLI):
     def do_exit(self, args):
         return -1
 
-    
-    def do_EOF(self, args):
-        self.do_exit(args)
-
-        
-    def help_EOF(self):
-        print "Super duper uber secret command."
-        print "If I tell you, I'll have to kill you."
-
 
     def help_exit(self):
         print "usage: /exit"
         print "-- Exists YATOT."
-
-
-    def help_help(self):
-        print "usage: /exit [command]"
-        print "-- Get help."
 
 
     def do_gg(self, args):
@@ -392,7 +378,31 @@ class CLI(ACLI):
         print "usage: /gg"
         print "-- Tells YATOT he found your word."
 
-    
+
+    def help_help(self):
+        print "usage: /exit [command]"
+        print "-- Get help."
+
+
+    def do_state(self, args):
+        print "Warning: not implemented yet"
+
+
+    def help_state(self):
+        print "usage: /state"
+        print "-- Prints YATOT's current state " \
+              "(number of hints, graph size ...)."
+
+
+    def do_welcome(self, args):
+        print self.intro + "\n"
+
+
+    def help_welcome(self):
+        print "usage: /welcome"
+        print "-- Print the welcome message"
+
+
     def default(self, hint):
         self._yatot._hintGiven(hint)
 

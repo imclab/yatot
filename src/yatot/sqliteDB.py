@@ -9,15 +9,7 @@
 # Description: 
 # ============================================================================
 # Notes:
-# * Il faudrait implémenter un système de filtre sur les types de noeuds et
-#   de relations. Tout les types ne sont pas pertinents comme n_question, 
-#   r_chunk_sujet etc ...
-#   A priori, ce qu'il faudrait faire :
-#   créer deux tables temporaires filteredNodeTypes et filteredRelationTypes,
-#   et les utiliser lors des requetes, par exemple
-#   SELECT ...
-#   FROM relations AS R
-#   WHERE R.rType NOT IN (SELECT * FROM filteredRelationTypes)
+#
 # ############################################################################
 
 import logging as log
