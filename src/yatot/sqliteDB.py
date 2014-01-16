@@ -33,6 +33,7 @@ class SQLiteDB:
         self._con = sqlite3.connect(self._path)
         if self._isConnected():
             log.info("Connected to %s", self._path)
+            # self._con.text_factory = lambda s: unicode(s, "utf-8", "ignore")
             self._con.row_factory = sqlite3.Row
             if foreignKeysPragma:
                 self._turnOnFK()
@@ -116,21 +117,21 @@ class SQLiteDB:
                     "FROM relations AS R, "                          \
                     "     nodes     AS N "                           \
                     "WHERE R.rFrom = :rFrom "                        \
-                    "AND   N.nID   = R.rTo "                         \
-                    "AND   N.nType NOT IN "                          \
-                    "  (SELECT ntType FROM filteredNodeTypes) "      \
                     "AND   R.rType NOT IN "                          \
                     "  (SELECT rtType FROM filteredRelationTypes) "  \
+                    "AND   N.nID = R.rTo "                           \
+                    "AND   N.nType NOT IN "                          \
+                    "  (SELECT ntType FROM filteredNodeTypes) "      \
                     "UNION "                                         \
                     "SELECT DISTINCT R.rFrom AS neighbour "          \
                     "FROM relations AS R, "                          \
                     "     nodes     AS N "                           \
                     "WHERE R.rTo  = :rTo "                           \
+                    "AND   R.rType NOT IN "                          \
+                    "  (SELECT rtType FROM filteredRelationTypes) "  \
                     "AND   N.nID  = R.rFrom "                        \
                     "AND   N.nType NOT IN "                          \
-                    "  (SELECT rtType FROM filteredRelationTypes) "  \
-                    "AND   R.rType NOT IN "                          \
-                    "  (SELECT rtType FROM filteredRelationTypes) ",
+                    "  (SELECT rtType FROM filteredRelationTypes)",
                     {"rFrom" : nID, "rTo" : nID})
         return cur.fetchall()
 
