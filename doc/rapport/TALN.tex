@@ -1,0 +1,87 @@
+% ----------------------------------------------------------------------------
+% TODO
+% * Refaire l'algo d'intersection MLF et redéfinissant la fonction signature
+%   avec la distance
+% * Comparer avec la proposition
+% * Mixer graphe et vecteur càd structure et espace. Neo4j geolocalizer ?
+%   Problématique d'accès aux données.
+% * Quelles dimensions ? dimensions qui évoluent (= point de vue)
+% ----------------------------------------------------------------------------
+
+\documentclass[pdftex,10pt,a4paper]{report}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+%% Packages ------------------------------------------------------------------
+
+% math
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% théorèmes
+\newtheorem{definition}{Définition}
+\newtheorem{todo}{TODO}
+
+% algorithme
+\usepackage[french,ruled,vlined,linesnumbered]{algorithm2e}
+
+% mise en forme
+\usepackage[Sonny]{fncychap}
+
+% marges
+\usepackage{geometry}
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
+
+% pas d'alinéa
+%\setlength{\parindent}{0pt}
+
+% insertion de graphique
+\usepackage[pdftex]{graphicx}
+\usepackage{wrapfig}
+
+% liens
+\usepackage{hyperref}
+\usepackage{url}
+
+% multi-colonnes
+\usepackage{multicol}
+
+% Divers
+\usepackage{wasysym}
+\usepackage{textcomp}
+
+% bibliographie
+\usepackage[numbers,square,comma,sort&compress]{natbib}
+
+%% Début document ------------------------------------------------------------
+
+\begin{document}
+
+  \pagenumbering{roman}
+
+  % Page de titre
+  \input{./tex/titre}
+
+  \input{./tex/resume}
+
+  \tableofcontents
+%  \listoffigures
+%  \listofalgorithms
+  \clearpage
+
+  \pagenumbering{arabic}
+
+  \input{./tex/introduction}
+
+  \input{./tex/meilleurConnecteur}
+
+  \input{./tex/conclusion}
+
+  \appendix
+
+  \input{./tex/bibliographie}
+
+\end{document}

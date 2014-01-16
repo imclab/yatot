@@ -1,0 +1,54 @@
+Create a sample SQLite database
+
+The example shown below does the following:
+
+    Create a new SQLite database called “company.db”.
+    Create “employee” table with three fields 1) Employee Id 2) Name and 3) Title
+    Insert 5 records into the employee tables.
+    Verify the records
+    Exit SQLite3
+
+$ sqlite3 company.db
+SQLite version 3.7.6.3
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+
+sqlite> create table employee(id integer,name varchar(20),title varchar(10));
+
+sqlite> insert into employee values(101,'John Smith','CEO');
+sqlite> insert into employee values(102,'Raj Reddy','Sysadmin');
+sqlite> insert into employee values(103,'Jason Bourne','Developer');
+sqlite> insert into employee values(104,'Jane Smith','Sale Manager');
+sqlite> insert into employee values(104,'Rita Patel','DBA');
+
+sqlite> select * from employee;
+101|John Smith|CEO
+102|Raj Reddy|Sysadmin
+103|Jason Bourne|Developer
+104|Jane Smith|Sale Manager
+104|Rita Patel|DBA
+
+sqlite>[Press Ctrl-D to exit]
+
+Access the SQLite Database
+
+When you create a database, it is nothing but a file. If you do “ls”, you’ll see the “company.db” file as shown below.
+
+$ ls -l company.db
+-rw-r--r--. 1 ramesh ramesh 2048 Jun 18 21:27 company.db
+
+To access an existing database and query the records, do the following. i.e When you do “sqlite3 company.db”, if the database doesn’t exist it’ll create it. If it already exists, it’ll open it.
+
+$ sqlite3 company.db
+SQLite version 3.7.6.3
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+
+sqlite> select * from employee;
+101|John Smith|CEO
+102|Raj Reddy|Sysadmin
+103|Jason Bourne|Developer
+104|Jane Smith|Sale Manager
+104|Rita Patel|DBA
+
+sqlite>[Press Ctrl-D to exit]
