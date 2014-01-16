@@ -16,8 +16,8 @@ import logging as log
 import sqlite3
 
 FILTERED_NODETYPES = [6, 7, 8, 9, 10, 18, 36, 666]
-FILTERED_RELATIONTYPES = [12, 29, 29, 45, 46, 47, 48, 66, 105, 666, 777, 997, \
-                          998, 1000, 1001, 1002, 2001]
+FILTERED_RELATIONTYPES = [12, 29, 29, 45, 46, 47, 48, 66, 105, 666, 777, \
+                          997, 998, 1000, 1001, 1002, 2001]
 
 
 def listGen(l):
@@ -33,7 +33,7 @@ class SQLiteDB:
         self._con = sqlite3.connect(self._path)
         if self._isConnected():
             log.info("Connected to %s", self._path)
-            # self._con.text_factory = lambda s: unicode(s, "utf-8", "ignore")
+            self._con.text_factory = str
             self._con.row_factory = sqlite3.Row
             if foreignKeysPragma:
                 self._turnOnFK()
