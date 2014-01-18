@@ -361,6 +361,16 @@ class CLI(ACLI):
         self.intro = banner +  welcomeMsg
 
 
+    def do_draw(self, args):
+        path = self._yatot.drawGraph()
+        print "Graph drawed: {0}".format(path)
+
+
+    def help_draw(self):
+        print "usage: /draw"
+        print "-- Draw the graph."
+
+
     def do_exit(self, args):
         return -1
 

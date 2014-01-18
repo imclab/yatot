@@ -36,6 +36,9 @@ class Yatot:
 
 
     def _hintGiven(self, hint):
+        if hint in self._hints:
+            self._cli.printMsg("Already given hint: {0}".format(hint))
+            return
         self._hints.append(hint)
         hintID = self._db.queryNodeIDByName(hint)
         if len(hintID) == 0:
@@ -47,33 +50,62 @@ class Yatot:
         hintID = hintID[0]["nID"]
         hintDatas = self._db.queryNodeByID(hintID)
         neighbourhood = self._db.queryNodeNeighbourhoodByID(hintID)
-        self._addNode(hintDatas)
+        self._addNode(hintDatas["nID"], hintDatas["nName"], \
+                      hintDatas["nType"], hintDatas["nWeight"])
         self._addNeighbourhood(hintID, neighbourhood)
-        self._drawGraph()
 
 
-    def _addNode(self, node):
-        self._graph.add_node(node["nID"],             \
-                             nName   = node["nName"], \
-                             nType   = node["nType"], \
-                             nWeight = node["nWeight"])
+    def _nodeExists(self, nodeID):
+        return self._graph.node.has_key(nodeID)
+
+
+    def _addNode(self, nodeID, nodeName, nodeType, nodeWeight):
+        if not self._nodeExists(nodeID):
+            log.info("Adding node : (%s, %s, %s, %s)", \
+                     nodeID, nodeName, nodeType, nodeWeight)
+            self._graph.add_node(nodeID,             \
+                                 nName   = nodeName, \
+                                 nType   = nodeType, \
+                                 nWeight = nodeWeight)
+        else:
+            log.warning("Already existing node: %s, %s, %s %s", \
+                        nodeID, nodeName, nodeType, nodeWeight)
+
+
+    def _edgeExists(self, edgeID):
+        return self._graph.edge.has_key(edgeID)
+
+
+    def _addEdge(self, rFrom, rTo, rID, rType, rWeight):
+        if not self._edgeExists(rID):
+            log.info("Adding edge : (%s, %s, %s, %s, %s)", \
+                     rFrom, rTo, rID, rType, rWeight)
+            self._graph.add_edge(rFrom, rTo,      \
+                                 rID     = rID,   \
+                                 rType   = rType, \
+                                 rWeight = rWeight)
+        else:
+            log.warning("Already existing edge: %s, %s, %s", \
+                        rID, rType, rWeight)
 
 
     def _addNeighbourhood(self, nID, neighbourhood):
         for entry in neighbourhood:
-            self._graph.add_node(entry["rOther"],            \
-                                 nName   = entry["N.nName"], \
-                                 nType   = entry["N.nType"], \
-                                 nWeight = entry["N.nWeight"])
-            self._graph.add_edge(nID, entry["rOther"],       \
-                                 rID     = entry["R.rID"],   \
-                                 rType   = entry["R.rType"], \
-                                 rWeight = entry["R.rWeight"])
+            self._addNode(entry["rOther"],  entry["N.nName"], \
+                          entry["N.nType"], entry["N.nWeight"])
+            self._addEdge(nID, entry["rOther"], entry["R.rID"], \
+                          entry["R.rType"], entry["R.rWeight"])
 
 
-    def _drawGraph(self):
+    def drawGraph(self):
         lbls = {}
         for node in self._graph.nodes():
             lbls[node] = self._graph.node[node]["nName"]
-        nx.draw_networkx(self._graph, with_labels = True, labels = lbls)
-        plt.savefig("{0}.png".format(len(self._hints)))
+        nx.draw_graphviz(self._graph, prog = "twopi", \
+                         with_labels = True, labels = lbls)
+        path = "{0}.png".format(len(self._hints))
+        plt.savefig(path)
+        return path
+
+
+
