@@ -1,0 +1,21 @@
+\select@language {french}
+\contentsline {section}{R\IeC {\'e}sum\IeC {\'e}}{i}{section*.1}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Jeux de mots}{1}{section.1.1}
+\contentsline {subsection}{\numberline {1.1.1}Pr\IeC {\'e}sentation}{1}{subsection.1.1.1}
+\contentsline {subsection}{\numberline {1.1.2}R\IeC {\'e}seau lexical}{1}{subsection.1.1.2}
+\contentsline {subsection}{\numberline {1.1.3}Signature}{2}{subsection.1.1.3}
+\contentsline {section}{\numberline {1.2}TOTAKI}{2}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Pr\IeC {\'e}sentation}{2}{subsection.1.2.1}
+\contentsline {paragraph}{Exemple 1 :}{2}{section*.4}
+\contentsline {paragraph}{Exemple 2 :}{2}{section*.5}
+\contentsline {paragraph}{Exemple 3 :}{2}{section*.6}
+\contentsline {subsection}{\numberline {1.2.2}L'algorithme}{3}{subsection.1.2.2}
+\contentsline {section}{\numberline {1.3}Probl\IeC {\'e}matique}{3}{section.1.3}
+\contentsline {chapter}{\numberline {2}Meilleur connecteur}{4}{chapter.2}
+\contentsline {section}{\numberline {2.1}Calcul des chemins}{4}{section.2.1}
+\contentsline {section}{\numberline {2.2}Recherche du meilleur connecteur}{4}{section.2.2}
+\contentsline {section}{\numberline {2.3}Impl\IeC {\'e}mentation, tests}{4}{section.2.3}
+\contentsline {section}{\numberline {2.4}Discussion}{4}{section.2.4}
+\contentsline {chapter}{Conclusion}{7}{chapter*.7}
+\contentsline {chapter}{Bibliographie}{8}{appendix*.8}

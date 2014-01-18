@@ -60,5 +60,5 @@ Une documentation, en cours de rédaction est disponible : doc/TALN.pdf
 
 ## Auteurs & contacts
 
-* Kevin Cousot
-* Rider Carrion
+* Kevin COUSOT
+* Rider CARRION CLEGER
