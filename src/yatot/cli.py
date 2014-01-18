@@ -385,7 +385,7 @@ class CLI(ACLI):
 
 
     def do_state(self, args):
-        print "Warning: not implemented yet"
+        print "Hints given: {0}".format(len(self._yatot.getHints()))
 
 
     def help_state(self):

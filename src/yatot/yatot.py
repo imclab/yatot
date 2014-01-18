@@ -15,6 +15,7 @@
 import cli
 import logging as log
 import networkx as nx
+import matplotlib.pyplot as plt
 
 class Yatot:
 
@@ -23,29 +24,56 @@ class Yatot:
         self._db = db
         self._cli = cli.CLI(self)
         self._hints = []
+        self._graph = nx.MultiDiGraph()
 
 
     def play(self):
         self._cli.cmdloop()
 
 
+    def getHints(self):
+        return self._hints
+
+
     def _hintGiven(self, hint):
         self._hints.append(hint)
-        nodeID = self._db.queryNodeIDByName(hint)
-        if len(nodeID) == 0:
+        hintID = self._db.queryNodeIDByName(hint)
+        if len(hintID) == 0:
             self._cli.printMsg("Unknown word : {0}".format(hint))
             return
-        if len(nodeID) > 1:
+        if len(hintID) > 1:
             log.warning("There are more than one node with name: %s. " \
-                        "Picking the first one : %s",
-                        hint, nodeID[0][0])
-        nodeID = nodeID[0][0]
-        nodeDatas = self._db.queryNodeDatas(nodeID)
-        self._cli.printRow(nodeDatas)
-        neighboursIDs = self._db.queryNeighboursByID(nodeID)
-        neighboursDatas = {}
-        for elt in neighboursIDs:
-            neighbourID = elt["neighbour"]
-            neighboursDatas[neighbourID] = self._db.queryNodeDatas(neighbourID)
-        print neighboursDatas
+                        "Picking the first one", hint)
+        hintID = hintID[0]["nID"]
+        hintDatas = self._db.queryNodeByID(hintID)
+        neighbourhood = self._db.queryNodeNeighbourhoodByID(hintID)
+        self._addNode(hintDatas)
+        self._addNeighbourhood(hintID, neighbourhood)
+        # self._drawGraph()
 
+
+    def _addNode(self, node):
+        self._graph.add_node(node["nID"],             \
+                             nName   = node["nName"], \
+                             nType   = node["nType"], \
+                             nWeight = node["nWeight"])
+
+
+    def _addNeighbourhood(self, nID, neighbourhood):
+        for entry in neighbourhood:
+            self._graph.add_node(entry["rOther"],            \
+                                 nName   = entry["N.nName"], \
+                                 nType   = entry["N.nType"], \
+                                 nWeight = entry["N.nWeight"])
+            self._graph.add_edge(nID, entry["rOther"],       \
+                                 rID     = entry["R.rID"],   \
+                                 rType   = entry["R.rType"], \
+                                 rWeight = entry["R.rWeight"])
+
+
+    def _drawGraph(self):
+        # lbls = {}
+        # for node in self._graph.nodes():
+        #     lbls[node] = self._graph.node[node]
+        nx.draw_networkx(self._graph)
+        plt.savefig("{0}.png".format(len(self._hints)))

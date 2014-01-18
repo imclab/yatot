@@ -37,7 +37,7 @@ class SQLiteDB:
             self._con.row_factory = sqlite3.Row
             if foreignKeysPragma:
                 self._turnOnFK()
-            log.debug("Creating table filteredNodeTypes")            
+            log.debug("Creating table filteredNodeTypes")
             self._createFilteredNodeTypesTbl()
             log.debug("Creating table filteredRelationTypes")
             self._createFilteredRelationTypesTbl()
@@ -106,14 +106,14 @@ class SQLiteDB:
     def queryNodeIDByName(self, name):
         cur = self._con.cursor()
         cur.execute("SELECT nID FROM nodes " \
-                    "WHERE  nName = :name",
+                    "WHERE  nName LIKE :name ",
                     {"name" : name})
         return cur.fetchall()
 
 
     def queryNeighboursByID(self, nID):
         cur = self._con.cursor()
-        cur.execute("SELECT DISTINCT R.rTo AS neighbour "            \
+        cur.execute("SELECT DISTINCT R.rTo AS ngID "                 \
                     "FROM relations AS R, "                          \
                     "     nodes     AS N "                           \
                     "WHERE R.rFrom = :rFrom "                        \
@@ -123,7 +123,7 @@ class SQLiteDB:
                     "AND   N.nType NOT IN "                          \
                     "  (SELECT ntType FROM filteredNodeTypes) "      \
                     "UNION "                                         \
-                    "SELECT DISTINCT R.rFrom AS neighbour "          \
+                    "SELECT DISTINCT R.rFrom AS ngID "               \
                     "FROM relations AS R, "                          \
                     "     nodes     AS N "                           \
                     "WHERE R.rTo  = :rTo "                           \
@@ -136,13 +136,51 @@ class SQLiteDB:
         return cur.fetchall()
 
 
-    def queryNodeDatas(self, nID):
+    def queryNodeNeighbourhoodByID(self, nID):
+        cur = self._con.cursor()
+        cur.execute("SELECT DISTINCT " \
+                    "  R.rID, R.rTo AS rOther, R.rType, R.rWeight, "   \
+                    "  N.nName, N.nType, N.nWeight "                   \
+                    "FROM nodes     AS N, "                            \
+                    "     relations AS R "                             \
+                    "WHERE R.rFrom = :nID "                            \
+                    "AND R.rType NOT IN "                              \
+                    "  (SELECT rtType FROM filteredRelationTypes) "    \
+                    "AND N.nID = R.rTo "                               \
+                    "AND N.nType NOT IN "                              \
+                    "  (SELECT ntType FROM filteredNodeTypes) "        \
+                    "UNION "                                           \
+                    "SELECT DISTINCT "                                 \
+                    "  R.rID, R.rFrom AS rOther, R.rType, R.rWeight, " \
+                    "  N.nName, N.nType, N.nWeight "                   \
+                    "FROM nodes     AS N, "                            \
+                    "     relations AS R "                             \
+                    "WHERE R.rTo = :nID "                              \
+                    "AND R.rType NOT IN "                              \
+                    "  (SELECT rtType FROM filteredRelationTypes) "    \
+                    "AND N.nID = R.rFrom "                             \
+                    "AND N.nType NOT IN "                              \
+                    "  (SELECT ntType FROM filteredNodeTypes) ",
+                    {"nID" : nID})
+        return cur.fetchall()
+
+
+    def queryNodeByID(self, nID):
         cur = self._con.cursor()
         cur.execute("SELECT nID, nName, nType, nWeight " \
                     "FROM nodes "                        \
                     "WHERE nID = :nID",
                     {"nID" : nID})
         return cur.fetchone()
+
+
+    def queryNodesByID(self, nIDs):
+        cur = self._con.cursor()
+        cur.executemany("SELECT nID, nName, nType, nWeight " \
+                        "FROM nodes "                        \
+                        "WHERE nID = (?)",
+                        listGen(nIDs))
+        return cur.fetchall()
 
 
     def queryEdgeDatas(self, rID):
