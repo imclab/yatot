@@ -49,7 +49,7 @@ class Yatot:
         neighbourhood = self._db.queryNodeNeighbourhoodByID(hintID)
         self._addNode(hintDatas)
         self._addNeighbourhood(hintID, neighbourhood)
-        # self._drawGraph()
+        self._drawGraph()
 
 
     def _addNode(self, node):
@@ -72,8 +72,8 @@ class Yatot:
 
 
     def _drawGraph(self):
-        # lbls = {}
-        # for node in self._graph.nodes():
-        #     lbls[node] = self._graph.node[node]
-        nx.draw_networkx(self._graph)
+        lbls = {}
+        for node in self._graph.nodes():
+            lbls[node] = self._graph.node[node]["nName"]
+        nx.draw_networkx(self._graph, with_labels = True, labels = lbls)
         plt.savefig("{0}.png".format(len(self._hints)))
