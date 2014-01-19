@@ -394,14 +394,14 @@ class CLI(ACLI):
         print "-- Get help."
 
 
-    def do_state(self, args):
+    def do_infos(self, args):
         print "Hints given: {0}".format(len(self._yatot.getHints()))
+        print self._yatot.getGraphInfos()
 
 
-    def help_state(self):
-        print "usage: /state"
-        print "-- Prints YATOT's current state " \
-              "(number of hints, graph size ...)."
+    def help_infos(self):
+        print "usage: /infos"
+        print "-- Prints infos about YATOT's current state."
 
 
     def do_welcome(self, args):
