@@ -371,6 +371,15 @@ class CLI(ACLI):
         print "-- Draw the graph."
 
 
+    def do_dump(self, args):
+        self._yatot.dumpGraph()
+
+
+    def help_dump(self):
+        print "usage: /dump"
+        print "-- Dump the graph in graphml format."
+
+
     def do_exit(self, args):
         return -1
 

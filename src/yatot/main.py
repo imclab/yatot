@@ -44,7 +44,7 @@ def buildParser():
                         help = "JeuxDeMots SQLite3 database")
     parser.add_argument("--logging",
                         choices = loggingLevels,
-                        default = "DEBUG",
+                        default = "WARNING",
                         metavar = "",
                         help    = "log level. Allowed values: " + ", ".join(loggingLevels))
     return parser

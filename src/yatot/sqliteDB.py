@@ -138,7 +138,7 @@ class SQLiteDB:
 
     def queryNodeNeighbourhoodByID(self, nID):
         cur = self._con.cursor()
-        cur.execute("SELECT DISTINCT " \
+        cur.execute("SELECT DISTINCT "                                 \
                     "  R.rID, R.rTo AS rOther, R.rType, R.rWeight, "   \
                     "  N.nName, N.nType, N.nWeight "                   \
                     "FROM nodes     AS N, "                            \
