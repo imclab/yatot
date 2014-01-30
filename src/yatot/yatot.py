@@ -28,7 +28,8 @@ class Yatot:
         self._cli = cli.CLI(self)
         self._hints = []
         self._graph = nx.MultiGraph()
-        
+        self._paths = {}
+        self._answers = []
 
 
     def play(self):
@@ -44,15 +45,22 @@ class Yatot:
 
 
     def _computeAnswer(self):
+        answer = None
         if len(self._hints) == 1:
-            return self._getStrongestNeighbour(self._hints[0])
-        for i in xrange(len(self._hints)):
-            source = self._hints[i]
-            for j in xrange(i + 1, len(self._hints)):
-                target = self._hints[j]
-                path = all_simple_paths(self._graph, source, target, L)
-                print sorted(list(path), key = len)
-        return None
+            answer = self._getStrongestNeighbour(self._hints[0])
+        else:
+            self._updatePaths()
+            nodes = self._nodesToProcess()
+            centrality = {}
+            for node in nodes:
+                centrality[node] = self._computeCentrality(node)
+            answer = None
+            maxCentrality = 0
+            for k, v in centrality.iteritems():
+                if v > maxCentrality:
+                    answer = k
+                    maxCentrality = v
+        return answer
 
 
     # What if there are several strongest neighbours ?
@@ -68,6 +76,41 @@ class Yatot:
         return strongestNeighbour
 
 
+    def _nodesToProcess(self):
+        nodes = self._graph.nodes()
+        for hint in self._hints:
+            nodes.remove(hint)
+        for answer in self._answers:
+            nodes.remove(answer)
+        return nodes
+
+
+    def _computeCentrality(self, node):
+        centrality = 0
+        for i in xrange(len(self._hints)):
+            s = self._hints[i]
+            for j in xrange(i + 1, len(self._hints)):
+                t = self._hints[j]
+                d = self._nbOfPaths(s, t)
+                if d == 0:
+                    continue
+                n = self._nbOfPaths(s, t, node)
+                centrality = centrality + (n / float(d))
+        return centrality
+
+
+    def _nbOfPaths(self, s, t, v = None):
+        nbOfPaths = 0
+        paths = self._paths[(s, t)]
+        if v is None:
+            nbOfPaths = len(paths)
+        else:
+            for path in paths:
+                if v in path:
+                    nbOfPaths = nbOfPaths + 1
+        return nbOfPaths
+
+
     def _hintGiven(self, hint):
         if hint in self._hints:
             self._cli.printMsg("Already given hint: {0}".format(hint))
@@ -79,8 +122,8 @@ class Yatot:
         self._hints.append(hintID)
         self._updateGraph(hintID)
         answer = self._computeAnswer()
-        print "answer: {0}".format(answer)
-        print "answer bis:", self._graph.node[answer]
+        self._answers.append(answer)
+        self._cli.printMsg(self._graph.node[answer]["nName"])
 
 
     def _getHintID(self, hint):
@@ -88,8 +131,8 @@ class Yatot:
         if len(results) == 0:
             return None
         if len(results) > 1:
-            log.info("There are more than one node with name: %s. " \
-                     "Picking the first one", hint)
+            log.warning("There are more than one node with name: %s. " \
+                        "Picking the first one", hint)
         return results[0]["nID"]
 
 
@@ -134,6 +177,15 @@ class Yatot:
         for entry in neighbourhood:
             self._addEdge(nID, entry["rOther"], entry["R.rID"], \
                           entry["R.rType"], entry["R.rWeight"])
+
+
+    def _updatePaths(self):
+        for i in xrange(len(self._hints)):
+            source = self._hints[i]
+            for j in xrange(i + 1, len(self._hints)):
+                target = self._hints[j]
+                path = all_simple_paths(self._graph, source, target, L)
+                self._paths[(source, target)] = sorted(list(path), key = len)
 
 
     def drawGraph(self):
