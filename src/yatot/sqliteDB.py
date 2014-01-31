@@ -16,7 +16,12 @@ import sys
 import logging as log
 import sqlite3
 
-# THIS CLASS PROVIDE ACCESS TO DATA STORAGES INTO SQLITE DATABASE
+# GEN LIST
+def listGen(l):
+    for element in l:
+        yield (element,)
+        
+# THIS CLASS PROVIDE ACCESS TO DATA STORAGES IN SQLITE DATA BASE
 class SQLiteDB:
 
     # CLASS CONSTRUCTOR
@@ -50,14 +55,11 @@ class SQLiteDB:
     def _isConnected(self):
         try:
             cur = self._con.cursor()
-            #cur.execute("SELECT nID FROM nodes LIMIT 1")
-            #data = cur.fetchone()[0]
             cur.execute("SELECT SQLITE_VERSION()")
             data = cur.fetchone()
             if data:
                 return True
-            else:
-                return False
+            return False
         except Exception as e:
             self._con.close()
             self._con = None
@@ -105,7 +107,6 @@ class SQLiteDB:
 
     # RETRIEVE A SET OF FILTERED IDENTIEFIERS
     def getFilteredTypes(self, filePathName):
-        lines = ""
         try:
             fo = open(filePathName, "r")
             lines = fo.read();
@@ -114,7 +115,6 @@ class SQLiteDB:
             sys.exit()
         finally:
             fo.close()
-            
         for element in list(lines.split("\n")):
             yield (element,)
         
