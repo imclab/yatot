@@ -100,7 +100,6 @@ class ACLI:
                 except ImportError:
                     pass
 
-
     def precmd(self, line):
         return line
 
