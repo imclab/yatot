@@ -12,22 +12,14 @@
 #
 # ############################################################################
 
+import sys
 import logging as log
 import sqlite3
 
-FILTERED_NODETYPES = [6, 7, 8, 9, 10, 18, 36, 666]
-FILTERED_RELATIONTYPES = [12, 29, 29, 45, 46, 47, 48, 66, 105, 666, 777, \
-                          997, 998, 1000, 1001, 1002, 2001]
-
-
-def listGen(l):
-    for element in l:
-        yield (element,)
-
-
+# THIS CLASS PROVIDE ACCESS TO DATA STORAGES INTO SQLITE DATABASE
 class SQLiteDB:
 
-
+    # CLASS CONSTRUCTOR
     def __init__(self, path, foreignKeysPragma = True):
         self._path = path
         self._con = sqlite3.connect(self._path)
@@ -41,6 +33,10 @@ class SQLiteDB:
             self._createFilteredNodeTypesTbl()
             log.debug("Creating table filteredRelationTypes")
             self._createFilteredRelationTypesTbl()
+            
+            FILTERED_NODETYPES      = self.getFilteredTypes("src/config/filtered-node-types.txt");
+            FILTERED_RELATIONTYPES  = self.getFilteredTypes("src/config/filtered-relation-types.txt");
+            
             log.debug("Setting node type filters")
             self.setFilteredNodeTypes(FILTERED_NODETYPES)
             log.debug("Setting relation type filters")
@@ -50,25 +46,30 @@ class SQLiteDB:
             log.critical(msg)
             raise Exception(msg)
 
-
+    # VERIFIES DB CONNECTION
     def _isConnected(self):
         try:
             cur = self._con.cursor()
-            cur.execute("SELECT nID FROM nodes LIMIT 1")
-            data = cur.fetchone()[0]
-            return True
+            #cur.execute("SELECT nID FROM nodes LIMIT 1")
+            #data = cur.fetchone()[0]
+            cur.execute("SELECT SQLITE_VERSION()")
+            data = cur.fetchone()
+            if data:
+                return True
+            else:
+                return False
         except Exception as e:
             self._con.close()
             self._con = None
             return False
 
-
+    # TURNS ON FOREIGN KEY CONTRAINTS
     def _turnOnFK(self):
         log.info("Turning on foreign keys constraints")
         cur = self._con.cursor()
         cur.execute("PRAGMA foreign_keys = ON")
 
-
+    # CREATES TABLE STRUCTURE FOR HOLDING FILTERED NODES IDENTIFIERS
     def _createFilteredNodeTypesTbl(self):
         cur = self._con.cursor()
         script = "DROP TABLE IF EXISTS filteredNodeTypes; "              \
@@ -78,7 +79,7 @@ class SQLiteDB:
                  ");"
         cur.executescript(script)
 
-
+    # CREATES TABLE STRUCTURE FOR HOLDING FILTERED RELATION IDENTIFIERS 
     def _createFilteredRelationTypesTbl(self):
         cur = self._con.cursor()
         script = "DROP TABLE IF EXISTS filteredRelationTypes; "              \
@@ -88,21 +89,36 @@ class SQLiteDB:
                  ");"
         cur.executescript(script)
 
-
-    def setFilteredNodeTypes(self, types):
+    # STORES FILTERED NODES IDENTIFIERS
+    def setFilteredNodeTypes(self, filteredTypes):
         cur = self._con.cursor()
         script = "INSERT INTO filteredNodeTypes VALUES (?)"
-        cur.executemany(script, listGen(FILTERED_NODETYPES))
+        cur.executemany(script, filteredTypes)
         self._con.commit()
 
-
-    def setFilteredRelationTypes(self, types):
+    # STORES UNFILTERED RELATION IDENTIFIERS
+    def setFilteredRelationTypes(self, filteredTypes):
         cur = self._con.cursor()
         script = "INSERT INTO filteredRelationTypes VALUES (?)"
-        cur.executemany(script, listGen(FILTERED_RELATIONTYPES))
+        cur.executemany(script, filteredTypes)
         self._con.commit()
 
-
+    # RETRIEVE A SET OF FILTERED IDENTIEFIERS
+    def getFilteredTypes(self, filePathName):
+        lines = ""
+        try:
+            fo = open(filePathName, "r")
+            lines = fo.read();
+        except IOError:
+            print "There was an error reading file..."
+            sys.exit()
+        finally:
+            fo.close()
+            
+        for element in list(lines.split("\n")):
+            yield (element,)
+        
+    # RETRIEVES NODES BY ITS NAME
     def queryNodeIDByName(self, name):
         cur = self._con.cursor()
         cur.execute("SELECT nID FROM nodes " \
@@ -110,7 +126,7 @@ class SQLiteDB:
                     {"name" : name})
         return cur.fetchall()
 
-
+    # RETRIEVE NEIGHBOURS (NODES) BY NODE IDENTIFIER
     def queryNeighboursByID(self, nID):
         cur = self._con.cursor()
         cur.execute("SELECT DISTINCT R.rTo AS ngID "                 \
@@ -135,7 +151,7 @@ class SQLiteDB:
                     {"rFrom" : nID, "rTo" : nID})
         return cur.fetchall()
 
-
+    # RETRIEVE NODE NEIGHBOURS BY NODE IDENTIFIER
     def queryNodeNeighbourhoodByID(self, nID):
         cur = self._con.cursor()
         cur.execute("SELECT DISTINCT "                                 \
@@ -164,7 +180,7 @@ class SQLiteDB:
                     {"nID" : nID})
         return cur.fetchall()
 
-
+    # RETRIEVES NODE BY ITS IDENTIFIER
     def queryNodeByID(self, nID):
         cur = self._con.cursor()
         cur.execute("SELECT nID, nName, nType, nWeight " \
@@ -173,7 +189,7 @@ class SQLiteDB:
                     {"nID" : nID})
         return cur.fetchone()
 
-
+    # RETRIEVES A NODES SET
     def queryNodesByID(self, nIDs):
         cur = self._con.cursor()
         cur.executemany("SELECT nID, nName, nType, nWeight " \
@@ -182,7 +198,7 @@ class SQLiteDB:
                         listGen(nIDs))
         return cur.fetchall()
 
-
+    # RETRIEVES A RELATIONS SET
     def queryEdgeDatas(self, rID):
         cur = self._con.cursor()
         cur.execute("SELECT rID, rFrom, rTo, rType, rWeight " \

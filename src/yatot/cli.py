@@ -390,7 +390,7 @@ class CLI(ACLI):
 
 
     def do_gg(self, args):
-        print "GG !"
+        print "Great dude, you did it ! \nWhould you like to play again ?"
 
 
     def help_gg(self):
