@@ -14,7 +14,6 @@
 #
 # ############################################################################
 
-
 import yatot
 import logging as log
 import string
@@ -360,11 +359,10 @@ class CLI(ACLI):
         self._yatot = yatot
         self.intro = banner +  welcomeMsg
 
-    
+    # DRAWS A PHRAPH
     def do_draw(self, args):
         path = self._yatot.drawGraph()
         print "Graph drawed: {0}".format(path)
-
 
     def help_draw(self):
         print "usage: /draw"
@@ -391,8 +389,11 @@ class CLI(ACLI):
 
     def do_gg(self, args):
         print "Great  I found your word !!!"
-        print "Game statistics\n---------------------------"
-        
+        print "\\o/ Great, I found your word \\o/"
+        print "I needed {0} hints".format(len(self._yatot.getHints()))
+        print self._yatot.getGraphInfos()
+        print "Please play again !"
+        return -1
 
 
     def help_gg(self):

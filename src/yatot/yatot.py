@@ -27,7 +27,7 @@ class Yatot:
         self._db = db
         self._cli = cli.CLI(self)
         self._hints = []
-        self._graph = nx.MultiGraph()
+        self._graph = nx.MultiGraph(name="Yatot's graph")
         self._paths = {}
         self._answers = []
 
@@ -196,6 +196,7 @@ class Yatot:
                          with_labels = True, labels = lbls)
         path = "{0}.png".format(len(self._hints))
         plt.savefig(path)
+        plt.show()      
         return path
 
 
