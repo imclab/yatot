@@ -55,9 +55,9 @@ class SQLiteDB:
     def _isConnected(self):
         try:
             cur = self._con.cursor()
-            cur.execute("SELECT SQLITE_VERSION()")
+            cur.execute("SELECT * FROM nodes LIMIT 1")
             data = cur.fetchone()
-            if data:
+            if data[0]:
                 return True
             return False
         except Exception as e:

@@ -354,13 +354,13 @@ Good Luck & Have Fun !
 
 class CLI(ACLI):
 
-
+    # CLASS CONSTRUCTOR
     def __init__(self, yatot):
         ACLI.__init__(self)
         self._yatot = yatot
         self.intro = banner +  welcomeMsg
 
-
+    
     def do_draw(self, args):
         path = self._yatot.drawGraph()
         print "Graph drawed: {0}".format(path)
@@ -390,7 +390,9 @@ class CLI(ACLI):
 
 
     def do_gg(self, args):
-        print "Great dude, you did it ! \nWhould you like to play again ?"
+        print "Great  I found your word !!!"
+        print "Game statistics\n---------------------------"
+        
 
 
     def help_gg(self):
