@@ -425,7 +425,7 @@ class CLI(ACLI):
 
 
     def default(self, hint):
-        self._yatot._hintGiven(hint)
+        self._yatot._hintGiven(unicode(hint, "utf-8", "ignore"))
 
 
     def printMsg(self, msg):

@@ -30,7 +30,7 @@ class SQLiteDB:
         self._con = sqlite3.connect(self._path)
         if self._isConnected():
             log.info("Connected to %s", self._path)
-            self._con.text_factory = str
+#             self._con.text_factory = str
             self._con.row_factory = sqlite3.Row
             if foreignKeysPragma:
                 self._turnOnFK()
